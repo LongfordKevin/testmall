@@ -4,3 +4,8 @@ export function getHomedata() {
         url: '/home/multidata'
     })
 }
+export function getGoodsdata() {
+    return request({
+        url: '/home/data'
+    })
+}

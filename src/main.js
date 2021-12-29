@@ -4,6 +4,8 @@ import App from '@/App'
 import router from '@/router/index.js'
 
 Vue.config.productionTip = false
+// 注册事件总线
+Vue.prototype.$bus = new Vue()
 
 /* eslint-disable no-new */
 new Vue({

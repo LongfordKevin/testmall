@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <router-view/>
-    <mini-tar-bar></mini-tar-bar>
+    <mini-tar-bar class="tar-bar"></mini-tar-bar>
   </div>
 </template>
 

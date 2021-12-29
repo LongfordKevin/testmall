@@ -55,3 +55,6 @@ a {
   float: right;
 }
 
+.tar-bar {
+  z-index: 5;
+}

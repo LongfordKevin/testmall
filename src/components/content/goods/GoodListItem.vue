@@ -1,11 +1,12 @@
 <!-- goodlistitem -->
 <template>
 <div class='goods-item'>
-    <img :src="goodsItem.show.img" alt="" >
+    <img :src="goodsItem.show.img" alt="" @load="loadImg">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">{{goodsItem.price}}</span>
       <span class="collect">{{goodsItem.cfav}}</span>
+    </div>
 </div>
 </template>
 
@@ -29,7 +30,9 @@ mounted() {
 
 },
 methods: {
-
+  loadImg() {
+    this.$bus.$emit("loadImgFlag")
+  }
 },
 }
 </script>

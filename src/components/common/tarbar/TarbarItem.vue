@@ -27,6 +27,7 @@ mounted() {
 },
 computed: {
     isActive() {
+      // 为true则目前是当前页
         return this.$route.path.indexOf(this.path) !== -1
     },
     activeStyle() {

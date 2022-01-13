@@ -3,14 +3,22 @@
   <div id="home" class="wrapper">
     <!-- <h1>home</h1> -->
     <nav-bar class="homenav"><div slot="center">购物街</div></nav-bar>
+    <tab-control
+        :title="title"
+        class="tab1"
+        @tabClick="tabClick"
+        ref="tabControl1"
+        v-show="isFixed"
+      ></tab-control>
     <b-scroll class="content" ref="scroll" @scroll="positionClick" @pullingUp="loadData" :probe-type="3" :pull-up-load="true">
       <home-swiper :banners="banners"></home-swiper>
       <recommend-bar :recommend="recommend"></recommend-bar>
       <feature></feature>
       <tab-control
         :title="title"
-        class="tab"
+        class="tab2"
         @tabClick="tabClick"
+        ref="tabControl2"
       ></tab-control>
       <good-list :goods="showGoods" />
     </b-scroll>
@@ -55,8 +63,26 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: "pop",
-      isShowType: false
+      isShowType: false,
+      offsetTop: 0,
+      isFixed: false,
+      last_position: 0
     };
+  },
+  destroyed() {
+    console.log("destroyed")
+  },
+  // 写了keep-alive后离开页面不会销毁，会执行deactivated函数，重回页面后执行activated
+  activated() {
+    console.log("activated")
+    console.log(this.last_position)
+    this.$refs.scroll.scrollTo(0, this.last_position, 0)
+    this.$refs.scroll.refresh()
+  },
+  deactivated() {
+    console.log("deactivated")
+    this.last_position = this.$refs.scroll.getY()
+    console.log(this.last_position)
   },
   created() {
     // 1.请求多个数据
@@ -72,9 +98,15 @@ export default {
      // 3.监听图片是否加载完成
     const refresh = debounce(this.$refs.scroll.refresh, 50)
     this.$bus.$on('loadImgFlag', () => {
-      console.log('-----')
+      // console.log('-----')
       refresh()
       // this.$refs.scroll.refresh()
+    })
+    this.$bus.$on('imgLoad', () => {
+      console.log('---------')
+      this.offsetTop = this.$refs.tabControl2.$el.offsetTop
+      console.log("this is offsetTop")
+      console.log(this.offsetTop)
     })
   },
   methods: {
@@ -89,16 +121,17 @@ export default {
     getGoodsdata(type) {
       const page = this.goods[type].page + 1;
       getGoodsdata(type, page).then((res) => {
-        console.log("goods");
+        // console.log("goods");
         // console.log(res)
         this.goods[type].page += 1;
         this.goods[type].list.push(...res.data.data.list);
+        // console.log(this.$refs.scroll)
         this.$refs.scroll.finishPullUp()
         // console.log(this.goods['pop'].list)
       });
     },
     tabClick(index) {
-      console.log(index);
+      // console.log(index);
       switch (index) {
         case 0:
           this.currentType = "pop";
@@ -110,21 +143,26 @@ export default {
           this.currentType = "sell";
           break;
       }
+      this.$refs.tabControl1.currenIndex = index
+      this.$refs.tabControl2.currenIndex = index
     },
     backClick() {
-      console.log("clicking")
+      // console.log("clicking")
       // console.log(this.$refs.backTo.scroll.scrollTo)
       this.$refs.scroll.scrollTo(0,0,500)
     },
     positionClick(position) {
-      console.log(position.y)
+      // console.log(position.y)
+      // 1.判断backto是否展示
       this.isShowType = position.y*(-1) > 1000
-      console.log(this.isShowType)
+      // 2.判断tabControl是否展示
+      this.isFixed = position.y*(-1) > this.offsetTop
+      // console.log(this.isShowType)
     },
     loadData() {
-      console.log("上拉加载更多")
+      // console.log("上拉加载更多")
       this.getGoodsdata(this.currentType)
-      console.log("加载完成")
+      // console.log("加载完成")
       // this.scroll.scroll.refresh()
     }
   },
@@ -140,20 +178,30 @@ export default {
   height: 100vh;
   position: relative;
 }
+.tab1 {
+  /* position: fixed;
+  top: 44px;
+  right: 0px;
+  left: 0;
+  bottom: 0; */
+  position: relative;
+  background-color: #fff;
+  z-index: 9;
+}
 .homenav {
   background-color: var(--color-tint);
-  position: fixed;
+  /* position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 9;
+  z-index: 9; */
 }
 /* .home {
   padding-top: 44px;
 } */
-.tab {
-  position: sticky;
-  top: 44px;
+.tab2 {
+  /* position: sticky; */
+  /* top: 44px; */
   background-color: #fff;
   z-index: 9;
 }

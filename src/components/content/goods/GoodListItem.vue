@@ -1,6 +1,6 @@
 <!-- goodlistitem -->
 <template>
-<div class='goods-item'>
+<div class='goods-item' @click="detailsClick" >
     <img :src="goodsItem.show.img" alt="" @load="loadImg">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
@@ -32,6 +32,9 @@ mounted() {
 methods: {
   loadImg() {
     this.$bus.$emit("loadImgFlag")
+  },
+  detailsClick() {
+    this.$router.push('/details/' + this.goodsItem.iid)
   }
 },
 }

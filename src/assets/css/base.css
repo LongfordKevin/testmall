@@ -8,6 +8,7 @@
   --color-background: #fff;
   --font-size: 14px;
   --line-height: 1.5;
+  --border-bottom: 5px solid #f5f2f8;
 }
 
 *,
@@ -55,6 +56,6 @@ a {
   float: right;
 }
 
-.tar-bar {
+/* .tar-bar {
   z-index: 5;
-}
+} */

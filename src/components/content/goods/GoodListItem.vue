@@ -1,7 +1,7 @@
 <!-- goodlistitem -->
 <template>
 <div class='goods-item' @click="detailsClick" >
-    <img :src="goodsItem.show.img" alt="" @load="loadImg">
+    <img :src="showImages" alt="" @load="loadImg">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">{{goodsItem.price}}</span>
@@ -34,9 +34,15 @@ methods: {
     this.$bus.$emit("loadImgFlag")
   },
   detailsClick() {
+    console.log(this.goodsItem)
     this.$router.push('/details/' + this.goodsItem.iid)
   }
 },
+computed: {
+    showImages() {
+      return this.goodsItem.image || this.goodsItem.show.img
+    }
+  },
 }
 </script>
 <style scoped>

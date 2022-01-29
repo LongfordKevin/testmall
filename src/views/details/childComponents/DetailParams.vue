@@ -6,9 +6,9 @@
         <span>{{ params.rule_key }}</span>
       </div>
       <table>
-        <tr>
-          <td v-for="(item, index) in params.rule_tables" :key="index">
-            {{ item }}
+        <tr v-for="(item, index_x) in params.rule_tables" :key="index_x">
+          <td v-for="(rule, index_y) in item" :key="index_y">
+            {{ rule }}
           </td>
         </tr>
       </table>
@@ -49,10 +49,10 @@ export default {
 .rules {
   border-bottom: var(--border-bottom);
 }
-.rules-title .key-title {
-  margin-top: 10px;
-  font-weight: 700;
-  margin-left: 2px;
+.rules-title, .key-title {
+  margin: 1px 5px;
+  height: 40px;
+  line-height: 40px;
 }
 table {
   margin-top: 15px;
@@ -64,8 +64,12 @@ table {
 table tr {
   margin-top: 10px;
   text-align: left;
+  border-bottom: 2px solid black;
 }
 table td:first-child {
   color: var(--color-high-text);
+}
+.product-key {
+  border-bottom: var(--border-bottom);
 }
 </style>

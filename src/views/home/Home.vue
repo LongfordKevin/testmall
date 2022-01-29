@@ -22,6 +22,7 @@
       ></tab-control>
       <good-list :goods="showGoods" />
     </b-scroll>
+    <!-- 组件绑定事件必须加native -->
     <back-to class="back-to" @click.native="backClick" v-show="isShowType"></back-to>
   </div>
 </template>
@@ -39,6 +40,8 @@ import BackTo from 'components/content/backTo/BackTo.vue'
 import { getHomedata } from "network/home.js";
 import { getGoodsdata } from "network/home.js";
 import { debounce } from 'common/utils.js'
+import { imageLoadMixin } from 'common/mixin.js'
+import { BackToMixin } from 'common/mixin.js'
 export default {
   name: "Home",
   components: {
@@ -49,8 +52,8 @@ export default {
     TabControl,
     GoodList,
     BScroll,
-    BackTo,
-    BackTo
+    // BackTo,
+    // BackTo
   },
   data() {
     return {
@@ -63,12 +66,15 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: "pop",
-      isShowType: false,
+      // isShowType: false,
       offsetTop: 0,
       isFixed: false,
-      last_position: 0
+      last_position: 0,
+      imageFlag: null
     };
   },
+  //混入
+  mixins: [imageLoadMixin, BackToMixin],
   destroyed() {
     console.log("destroyed")
   },
@@ -83,6 +89,7 @@ export default {
     console.log("deactivated")
     this.last_position = this.$refs.scroll.getY()
     console.log(this.last_position)
+    this.$bus.$off('loadImgFlag', this.imageFlag)
   },
   created() {
     // 1.请求多个数据
@@ -96,12 +103,8 @@ export default {
   },
   mounted() {
      // 3.监听图片是否加载完成
-    const refresh = debounce(this.$refs.scroll.refresh, 50)
-    this.$bus.$on('loadImgFlag', () => {
-      // console.log('-----')
-      refresh()
-      // this.$refs.scroll.refresh()
-    })
+   
+    // this.$bus.$on('loadImgFlag', this.imageFlag)
     this.$bus.$on('imgLoad', () => {
       console.log('---------')
       this.offsetTop = this.$refs.tabControl2.$el.offsetTop
@@ -146,15 +149,15 @@ export default {
       this.$refs.tabControl1.currenIndex = index
       this.$refs.tabControl2.currenIndex = index
     },
-    backClick() {
-      // console.log("clicking")
-      // console.log(this.$refs.backTo.scroll.scrollTo)
-      this.$refs.scroll.scrollTo(0,0,500)
-    },
+    // backClick() {
+    //   // console.log("clicking")
+    //   // console.log(this.$refs.backTo.scroll.scrollTo)
+    //   this.$refs.scroll.scrollTo(0,0,500)
+    // },
     positionClick(position) {
       // console.log(position.y)
       // 1.判断backto是否展示
-      this.isShowType = position.y*(-1) > 1000
+      this.isShowType = position.y*(-1) > this.offsetTop
       // 2.判断tabControl是否展示
       this.isFixed = position.y*(-1) > this.offsetTop
       // console.log(this.isShowType)

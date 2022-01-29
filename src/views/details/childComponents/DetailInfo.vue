@@ -39,7 +39,8 @@ mounted() {
 methods: {
     imgLoad() {
         if(++this.counter === this.imageLength) {
-            this.$bus.$emit("imgLoding")
+            console.log("loadImg")
+            this.$bus.$emit("loadImg")
         }
     }
 },

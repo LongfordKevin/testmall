@@ -7,6 +7,11 @@ export function getDetails(iid) {
         }
     })
 }
+export function getRecommend() {
+    return request({
+        url: '/recommend'
+    })
+}
 export class Goods{
     constructor(columns, itemInfo, shopInfo) {
         this.title = itemInfo.title
@@ -43,8 +48,20 @@ export class Params{
         this.product_info = itemParams.info.set
         this.product_key = itemParams.info.key
         this.rule_desc = itemParams.rule.desc
-        this.rule_tables = itemParams.rule.tables[0][0]
+        this.rule_tables = itemParams.rule.tables[0]
         this.rule_key = itemParams.rule.key
         this.disclaimer = itemParams.rule.disclaimer
+    }
+}
+export class Rate{
+    constructor(rate) {
+        this.cRate = rate.cRate
+        this.content = rate.list[0].content
+        this.rateId = rate.list[0].rateId
+        this.style = rate.list[0].style
+        this.avatar = rate.list[0].user.avatar
+        this.name = rate.list[0].user.uname
+        this.images = rate.list[0].images
+        this.time = rate.list[0].created
     }
 }

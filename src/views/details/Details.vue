@@ -14,8 +14,9 @@
       <detail-rate :rate="rate" ref="rate"></detail-rate>
       <good-list :goods="recommends" ref="recommends" />
     </b-scroll>
-    <detail-bottom-bar @addCart="addCart" ></detail-bottom-bar>
+    <detail-bottom-bar @addCart="addToCart" ></detail-bottom-bar>
     <back-to class="back-to" @click.native="backClick" v-show="isShowType"></back-to>
+    <toast :message="toastMessage" :isShow="toastIsShow"></toast>
   </div>
 </template>
 
@@ -30,6 +31,7 @@ import DetailParams from "./childComponents/DetailParams.vue";
 import DetailRate from "./childComponents/DetailRate.vue";
 import GoodList from "components/content/goods/GoodList.vue";
 import DetailBottomBar from "./childComponents/DetailBottomBar.vue"
+import Toast from "components/common/toast/Toast.vue"
 import {
   Shops,
   Goods,
@@ -42,6 +44,7 @@ import {
 import { debounce } from "common/utils.js";
 import { imageLoadMixin } from "common/mixin.js"
 import { BackToMixin } from 'common/mixin.js'
+import { mapActions } from 'vuex'
 export default {
   name: "Details",
   components: {
@@ -55,6 +58,7 @@ export default {
     DetailRate,
     GoodList,
     DetailBottomBar,
+    Toast,
   },
   mixins: [imageLoadMixin, BackToMixin],
   data() {
@@ -69,6 +73,8 @@ export default {
       recommends: [],
       title_position: [],
       currentIndex: 0,
+      toastIsShow: false,
+      toastMessage: "",
     };
   },
   created() {
@@ -102,6 +108,7 @@ export default {
     });
   },
   methods: {
+    ...mapActions(['addCart']),
     getDetails(iid) {
       getDetails(iid).then((res) => {
         console.log(res);
@@ -136,14 +143,24 @@ export default {
         }
         }
     },
-    addCart() {
+    addToCart() {
         const product={}
         product.iid = this.iid
         product.img = this.topImg[1]
         product.desc = this.goods.desc
         product.title = this.goods.title
         product.price = this.goods.lowNowPrice
-        this.$store.dispatch("addCart", product)
+        // this.$store.dispatch("addCart", product)
+        this.addCart(product).then(res => {
+          console.log(res)
+          // this.toastMessage = res
+          // this.toastIsShow = true
+          // setTimeout(() => {
+          //   this.toastIsShow = false
+          // }, 1500)
+          console.log(this.$toast)
+          this.$toast.toastShow(res, 1500)
+        })
         console.log("commit done")
     }
   },
